@@ -69,13 +69,14 @@ server.get('/oauth2callback', async (req, res) => {
   }
 });
 
-server.listen(3001, () => {
-  console.log('Example app listening on port 3001!');
-});
+// server.listen(3001, () => {
+//   console.log('Example app listening on port 3001!');
+// });
 
 // Slackのコマンドリスナー (Google認証開始)
 app.command('/google-auth', async ({ command, ack, respond }) => {
   await ack();
+  // commandのなかにuser情報も含まれている
 
   // Google OAuth 認証URLを生成
   const authUrl = oauth2Client.generateAuthUrl({
@@ -124,6 +125,7 @@ async function listGoogleCalendarEvents() {
 app.command('/calendar', async ({ command, ack, respond }) => {
   await ack();
   console.log('calendar command received');
+
   try {
     // Google Calendar APIからイベントを取得
     const events = await listGoogleCalendarEvents();
@@ -142,8 +144,8 @@ app.message('', async ({ message, say }) => {
   }
 });
 
-(async () => {
-  //⑤SlackBotを起動する
-  await app.start(env.PORT || 3000);
-  console.log('⚡️ Bolt app is running!');
-})();
+// (async () => {
+//   //⑤SlackBotを起動する
+//   await app.start(env.PORT || 3000);
+//   console.log('⚡️ Bolt app is running!');
+// })();
