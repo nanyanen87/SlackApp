@@ -1,7 +1,5 @@
 import { Middleware, SlackCommandMiddlewareArgs } from '@slack/bolt';
 import { oauth2Client } from '../app';
-import path from "path";
-import fs from "fs";
 import {google} from "googleapis";
 // /helloコマンドに対応する処理
 const CalendarCommand: Middleware<SlackCommandMiddlewareArgs> = async ({ command, ack, respond }) => {
@@ -9,8 +7,6 @@ const CalendarCommand: Middleware<SlackCommandMiddlewareArgs> = async ({ command
   await ack();
   // google認証が通っていればlistGoogleCalendarEventsを実行, 通っていなければgoogle-authコマンドを実行
   const isAuth = oauth2Client.credentials.access_token;
-  const tokenPath = path.join(__dirname + "/..", 'token.json');
-  console.log(tokenPath);
   if(!isAuth) {
     console.log('token not found');
     // google認証URLを送信
