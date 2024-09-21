@@ -23,5 +23,7 @@
     "googleapis": "^105.0.0",
     "lowdb": "^7.0.1",
     "ts-dotenv": "^0.9.1"
-  }
+  },
+    "type": "module"
 }
+

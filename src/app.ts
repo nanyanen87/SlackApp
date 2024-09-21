@@ -1,10 +1,12 @@
-import { App } from '@slack/bolt';
+import pkg from '@slack/bolt';
+const { App } = pkg;
+
 import { load } from 'ts-dotenv';
 import { google } from 'googleapis';
 import express from 'express';
-import helloCommand from './commands/hello';
-import calendarCommand from './commands/calendar';
-import {oauth2Callback} from "./routes/auth2callback";
+import helloCommand from './commands/hello.js';
+import calendarCommand from './commands/calendar.js';
+import oauth2Callback from "./routes/auth2callback.js";
 
 
 // 環境変数を読み込む

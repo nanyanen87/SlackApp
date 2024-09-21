@@ -1,22 +1,34 @@
 import { Middleware, SlackCommandMiddlewareArgs } from '@slack/bolt';
-import { oauth2Client } from '../app';
-import {google} from "googleapis";
+import { google } from "googleapis";
+import { oauth2Client } from '../app.js';
+import { getToken } from "../db/database.js";
 // /helloコマンドに対応する処理
 const CalendarCommand: Middleware<SlackCommandMiddlewareArgs> = async ({ command, ack, respond }) => {
   // コマンドを確認済みとしてACKを送信
   await ack();
-  // google認証が通っていればlistGoogleCalendarEventsを実行, 通っていなければgoogle-authコマンドを実行
-  const isAuth = oauth2Client.credentials.access_token;
-  if(!isAuth) {
+  // dbからtokenを取得、なければgoogle-authコマンドを実行
+  const token = await getToken(command.user_id)
+  if(!token) {
     console.log('token not found');
     // google認証URLを送信
     const authUrl = oauth2Client.generateAuthUrl({
       access_type: 'offline',
-      scope: ['https://www.googleapis.com/auth/calendar']
+      scope: ['https://www.googleapis.com/auth/calendar'],
+      state: command.user_id,
     });
+    // sessionにslackのuserIdを保存
     await respond(`Please authenticate with Google Calendar: ${authUrl}`);
     return;
+  } else {
+    oauth2Client.setCredentials({
+      access_token: token.accessToken,
+      refresh_token: token.refreshToken,
+      scope: token.scope,
+      token_type: token.tokenType,
+      expiry_date: token.expiryDate,
+    });
   }
+
 
   // ユーザーへのレスポンス
   try {
